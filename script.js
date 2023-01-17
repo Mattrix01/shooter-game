@@ -60,11 +60,19 @@ function animate(timestamp) {
     ravens.push(new Raven());
     // then set back to 0 so it can start counting again back from 0.
     timeToNextRaven = 0;
-    console.log(ravens);
   }
+  // we cycle through array through every single raven object and call thier update and draw methods.
   // calling raven variable
-  raven.update();
-  raven.draw();
+  // array literal by dropping [] ... is spread oeprator, spread each to be expanded in another array
+  // cycle through it with forEach, call it object that represents each individual object
+  // for each raven object in ravens array call/trigger their update and draw methods
+  // we use this this below spread array because we can then spread particles into the same array along with the raves as long as calling update and draw method
+  // we can call all classes by jsut expaning mroe and mroe arrays in here. for enemies, obstacles, powerups etc.
+  // can call all at once with below syntax.
+  [...ravens].forEach((object) => object.update());
+  [...ravens].forEach((object) => object.draw());
+  //   raven.update();
+  //   raven.draw();
   // using built in below method that will call animate again for constant loop based on timestamps
   requestAnimationFrame(animate);
 }

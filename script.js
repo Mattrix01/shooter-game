@@ -27,10 +27,14 @@ class Raven {
     // raves bounce up and down as they fly
     // random number beetween -2.5 and +2.5, 1 moves upwards, plus downwards
     this.directionY = Math.random() * 5 - 2.5;
+    this.markedForDeletion = false;
   }
   // values that ened to be adjusted for moving raven around
   update() {
     this.x -= this.directionX;
+    // if horizontal x coordinate of this particular raven object is less than 0 - this.width meaning it has moved behind left edge
+    // set markedForDeletion propery as TRUE.
+    if (this.x < 0 - this.width) this, (this.markedForDeletion = true);
   }
   // draw method takes updated values and any drawing code will represent single raven object visually
   draw() {
@@ -67,12 +71,20 @@ function animate(timestamp) {
   // cycle through it with forEach, call it object that represents each individual object
   // for each raven object in ravens array call/trigger their update and draw methods
   // we use this this below spread array because we can then spread particles into the same array along with the raves as long as calling update and draw method
-  // we can call all classes by jsut expaning mroe and mroe arrays in here. for enemies, obstacles, powerups etc.
+  // we can call all classes by just expanding more and more arrays in here. for enemies, obstacles, powerups etc.
   // can call all at once with below syntax.
   [...ravens].forEach((object) => object.update());
   [...ravens].forEach((object) => object.draw());
-  //   raven.update();
-  //   raven.draw();
+  // use splice while cycling through array to mvoe objects so not using ones going past screen
+  // use built in array filter method.
+  // take var that holds ravens array and reassign to new array. make sure let variable so can be changed.
+  // filter method creates a new array
+  // it wil be same array but objects that have markedForDeletion set to true, will be filtered out
+  // filter method creates a new array with all elements that passed the test implemented by provided function.
+  // take ravens variable and replace with same array but I wasntwed that array to be filled only with objects for which this condition below is TRUE.
+  // only objects that ahve marked with deletion property dont go in array.
+  ravens = ravens.filter((object) => !object.markedForDeletion);
+
   // using built in below method that will call animate again for constant loop based on timestamps
   requestAnimationFrame(animate);
 }

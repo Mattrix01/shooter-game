@@ -52,6 +52,8 @@ class Raven {
   // passed in deltatime as argument here
   update(deltatime) {
     this.x -= this.directionX;
+    // some ravens will move up and some will move down in positive to negative position along Y axis.
+    this.y += this.directionY;
     if (this.x < 0 - this.width)
       // if horizontal x coordinate of this particular raven object is less than 0 - this.width meaning it has moved behind left edge
       // set markedForDeletion propery as TRUE.

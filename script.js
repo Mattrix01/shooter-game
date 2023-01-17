@@ -51,6 +51,11 @@ class Raven {
   // values that ened to be adjusted for moving raven around
   // passed in deltatime as argument here
   update(deltatime) {
+    // if statement so they bounce and dont go off bottom/top of screen etc. setting so go opposite value if hit edge.
+    if (this.y < 0 || this.y > canvas.height - this.height) {
+      this.directionY = this.directionY * -1;
+    }
+
     this.x -= this.directionX;
     // some ravens will move up and some will move down in positive to negative position along Y axis.
     this.y += this.directionY;

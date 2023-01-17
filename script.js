@@ -3,6 +3,8 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+let timeToNextRaven = 0;
+
 // hold all raven objects
 let ravens = [];
 // blueprint based on which all my animated ravens will be created by JS
@@ -32,14 +34,19 @@ class Raven {
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }
-const raven =
-  // animtion loop
-  // anycode isnide this function will run over and over updating and drawing our game frame by frame
-  function animate(timestamp) {
-    // clear old paint previous frame etc.
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log("test");
-    // using built in below method that will call animate again for constant loop
-    requestAnimationFrame;
-  };
+// this will create 1 raven object that will have access to update and draw class method
+const raven = new Raven();
+// animtion loop
+// anycode isnide this function will run over and over updating and drawing our game frame by frame
+// timestamps will compare how many milliseconds elapsed since last loop, only when reach certain amount of time only then draw next frame.
+// timestamp is a default JS behaviour when using requestAnimationFrame
+function animate(timestamp) {
+  // clear old paint previous frame etc.
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // calling raven variable
+  raven.update();
+  raven.draw();
+  // using built in below method that will call animate again for constant loop based on timestamps
+  requestAnimationFrame(animate);
+}
 animate();

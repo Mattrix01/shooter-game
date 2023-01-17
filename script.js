@@ -42,16 +42,29 @@ class Raven {
     // below number of frames in our sprite sheet
     this.frame = 0;
     this.maxFrame = 4;
+    // helper properties for controlling frames speed for flap
+    this.timeSinceFlap = 0;
+    // change this value affects speed, how many milliseconds between each frame
+    // could be set to 100ms but here using random numbers between two values.
+    this.flapInterval = Math.random() * 50 + 50;
   }
   // values that ened to be adjusted for moving raven around
-  update() {
+  // passed in deltatime as argument here
+  update(deltatime) {
     this.x -= this.directionX;
-    // if horizontal x coordinate of this particular raven object is less than 0 - this.width meaning it has moved behind left edge
-    // set markedForDeletion propery as TRUE.
-    if (this.x < 0 - this.width) this.markedForDeletion = true;
-    // if this.frame is more than this.maxfame set this.frame to 0. else icnrease frame by 1
-    if (this.frame > this.maxFrame) this.frame = 0;
-    else this.frame++;
+    if (this.x < 0 - this.width)
+      // if horizontal x coordinate of this particular raven object is less than 0 - this.width meaning it has moved behind left edge
+      // set markedForDeletion propery as TRUE.
+      this.markedForDeletion = true;
+    // unifying speed across different devices with deltatime.
+    this.timeSinceFlap += deltatime;
+    // handles cycling through frames
+    if (this.timeSinceFlap > this.flapInterval) {
+      if (this.frame > this.maxFrame) this.frame = 0;
+      else this.frame++;
+      // reset back to 0 so can start counting again when to serve next frame
+      this.timeSinceFlap = 0;
+    }
   }
   // draw method takes updated values and any drawing code will represent single raven object visually
   draw() {
@@ -83,13 +96,13 @@ function animate(timestamp) {
   // clear old paint previous frame etc.
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   // calculate delta time in ms. between timestamp from this loop and saved time stamped value from previous loop
-  let deltaTime = timestamp - lastTime;
+  let deltatime = timestamp - lastTime;
   // after used last time value to calculate delta time, assign alst time var to new timestamp passed into the animate loop to comapre in next loop
   lastTime = timestamp;
   // increase its vlaue by delta time for every animation value.
   // starts at 0 and is increasing by this vlaue of around 16ms per each frame
   // delta time dependant on performance of your computer
-  timeToNextRaven += deltaTime;
+  timeToNextRaven += deltatime;
   // when time to enxt raven reaches this raven interval, increases by amount fo ms that happened between frame stated above variable
   // reaches 500, at that point push to array to let ravens
   if (timeToNextRaven > RavenInterval) {
@@ -105,7 +118,8 @@ function animate(timestamp) {
   // we use this this below spread array because we can then spread particles into the same array along with the raves as long as calling update and draw method
   // we can call all classes by just expanding more and more arrays in here. for enemies, obstacles, powerups etc.
   // can call all at once with below syntax.
-  [...ravens].forEach((object) => object.update());
+  // passing argument fo deltatime to update method so its available above.
+  [...ravens].forEach((object) => object.update(deltatime));
   [...ravens].forEach((object) => object.draw());
   // use splice while cycling through array to move objects so not using ones going past screen
   // use built in array filter method.

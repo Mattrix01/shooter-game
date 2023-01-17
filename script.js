@@ -21,8 +21,10 @@ class Raven {
     this.spriteHeight = 194;
     // multiplication is faster than division in code
     // keep values scaling ratio correct below
-    this.width = this.spriteWidth / 2;
-    this.height = this.spriteHeight / 2;
+    // m akes ravens all different sizes whhile preserving aspect ratio, no stretching.
+    this.sizeModifier = Math.random() * 0.6 + 0.4;
+    this.width = this.spriteWidth * this.sizeModifier;
+    this.height = this.spriteHeight * this.sizeModifier;
     // they can fly across to the left so canvas width
     this.x = canvas.width;
     // will be rnaodm number between 0 and canvas height, - height of raven so not off edge of screen
@@ -37,10 +39,9 @@ class Raven {
     // loading in raven sprite sheet
     this.image = new Image();
     this.image.src = "assets/raven.png";
-    // helper properties for sprite sheet
-    // moved up to calculate values that come after
-    this.spriteWidth = 271;
-    this.spriteHeight = 194;
+    // below number of frames in our sprite sheet
+    this.frame = 0;
+    this.maxFrame = 4;
   }
   // values that ened to be adjusted for moving raven around
   update() {
@@ -48,6 +49,9 @@ class Raven {
     // if horizontal x coordinate of this particular raven object is less than 0 - this.width meaning it has moved behind left edge
     // set markedForDeletion propery as TRUE.
     if (this.x < 0 - this.width) this.markedForDeletion = true;
+    // if this.frame is more than this.maxfame set this.frame to 0. else icnrease frame by 1
+    if (this.frame > this.maxFrame) this.frame = 0;
+    else this.frame++;
   }
   // draw method takes updated values and any drawing code will represent single raven object visually
   draw() {
@@ -55,9 +59,10 @@ class Raven {
     // callingbuilt in draw image method for ravens, expects between 3 or 9 arguments.
     // this,width and height scaling entire sprite sheet to fit
     // 4 arguments after this.image which portion of image we crop. source width height etc.
+    // 2nd and 3rd argument using the sheet frames, only 1 line so 3rd is 0.
     ctx.drawImage(
       this.image,
-      0,
+      this.frame * this.spriteWidth,
       0,
       this.spriteWidth,
       this.spriteHeight,

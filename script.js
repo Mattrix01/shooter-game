@@ -4,7 +4,10 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let timeToNextRaven = 0;
-
+// everytime time to enxt raven accumlates enough to reach 500 milliseconds, will trigger next raven and reset back to 0.
+let RavenInterval = 500;
+// holding value fo time stamp from rpevioous loop, init at 0
+let lastTime = 0;
 // hold all raven objects
 let ravens = [];
 // blueprint based on which all my animated ravens will be created by JS
@@ -43,10 +46,27 @@ const raven = new Raven();
 function animate(timestamp) {
   // clear old paint previous frame etc.
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // calculate delta time in ms. between timestamp from this loop and saved time stamped value from previous loop
+  let deltaTime = timestamp - lastTime;
+  // after used last time value to calculate delta time, assign alst time var to new timestamp passed into the animate loop to comapre in next loop
+  lastTime = timestamp;
+  // increase its vlaue by delta time for every animation value.
+  // starts at 0 and is increasing by this vlaue of around 16ms per each frame
+  // delta time dependant on performance of your computer
+  timeToNextRaven += deltaTime;
+  // when time to enxt raven reaches this raven interval, increases by amount fo ms that happened between frame stated above variable
+  // reaches 500, at that point push to array to let ravens
+  if (timeToNextRaven > RavenInterval) {
+    ravens.push(new Raven());
+    // then set back to 0 so it can start counting again back from 0.
+    timeToNextRaven = 0;
+    console.log(ravens);
+  }
   // calling raven variable
   raven.update();
   raven.draw();
   // using built in below method that will call animate again for constant loop based on timestamps
   requestAnimationFrame(animate);
 }
-animate();
+// passing timestamp of 0 as an argument
+animate(0);

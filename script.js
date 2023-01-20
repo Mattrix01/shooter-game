@@ -2,6 +2,9 @@ const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+let score = 0;
+// increasing global canvas font below
+ctx.font = "50px Impact";
 
 let timeToNextRaven = 0;
 // everytime time to enxt raven accumlates enough to reach 500 milliseconds, will trigger next raven and reset back to 0.
@@ -93,6 +96,20 @@ class Raven {
     );
   }
 }
+// click event co-ordinates
+window.addEventListener("click", function (e) {
+  console.log(e.x, e.y);
+});
+
+function drawScore() {
+  ctx.fillStyle = "black";
+  // drawing score at co-ordinates 50,70 etc.
+  ctx.fillText("Score: " + score, 50, 75);
+  // adding another score to give shadow effect
+  ctx.fillStyle = "white";
+  ctx.fillText("Score: " + score, 55, 80);
+}
+
 // this will create 1 raven object that will have access to update and draw class method
 const raven = new Raven();
 // animtion loop
@@ -117,6 +134,7 @@ function animate(timestamp) {
     // then set back to 0 so it can start counting again back from 0.
     timeToNextRaven = 0;
   }
+  drawScore();
   // we cycle through array through every single raven object and call thier update and draw methods.
   // calling raven variable
   // array literal by dropping [] ... is spread oeprator, spread each to be expanded in another array

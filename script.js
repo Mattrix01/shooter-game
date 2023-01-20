@@ -96,9 +96,13 @@ class Raven {
     );
   }
 }
-// click event co-ordinates
+// click event co-ordinates, using colors
 window.addEventListener("click", function (e) {
-  console.log(e.x, e.y);
+  // get image data method scans area of canvas and returns an array-like object called UNIT8 clamped array.
+  // it is a simple data structure full of unassigned 8-bit intergers (whole numbers) between a certain value range
+  // getImageData needs 4 arguments. x y width height with area we want to scan. 1 pixel etc.
+  const detectPixelColor = ctx.getImageData(e.x, e.y, 1, 1);
+  console.log(detectPixelColor);
 });
 
 function drawScore() {

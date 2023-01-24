@@ -185,6 +185,16 @@ function animate(timestamp) {
       return a.width - b.width;
     });
   }
+  // holding animated explosion objects
+  let explosion = [];
+  // new blue print class for explosion
+  class Explosions {
+    constructor(x, y, size) {
+      this.image = new Image();
+      this.image.src = "boom";
+    }
+  }
+
   drawScore();
   // we cycle through array through every single raven object and call thier update and draw methods.
   // calling raven variable

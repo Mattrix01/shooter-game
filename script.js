@@ -21,8 +21,9 @@ let ravens = [];
 
 class Raven {
   constructor() {
-    this.spriteWidth = 271;
-    this.spriteHeight = 194;
+    //w 4100/20 h 176 = 205
+    this.spriteWidth = 205;
+    this.spriteHeight = 176;
     this.sizeModifier = Math.random() * 0.6 + 0.4;
     this.width = this.spriteWidth * this.sizeModifier;
     this.height = this.spriteHeight * this.sizeModifier;
@@ -32,7 +33,7 @@ class Raven {
     this.directionY = Math.random() * 5 - 2.5;
     this.markedForDeletion = false;
     this.image = new Image();
-    this.image.src = "assets/raven.png";
+    this.image.src = "assets/alien-sheet.png";
     this.frame = 0;
     this.maxFrame = 4;
     this.timeSinceFlap = 0;
@@ -69,7 +70,7 @@ class Raven {
       // only create trails if this is true, only half of them have trails.
       if (this.hasTrail) {
         //for loop to make trail nicer adding 5 particles everytime.
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 19; i++) {
           // we are going to push new particles inside
           // this.color is for the collision detection
           particles.push(new particle(this.x, this.y, this.width, this.color));
@@ -107,7 +108,7 @@ class Explosion {
     this.y = y;
     this.frame = 0;
     this.sound = new Audio();
-    this.sound.src = "assets/boomfire.wav";
+    this.sound.src = "assets/laser2.wav";
     this.timeSinceLastFrame = 0;
     this.frameInterval = 150;
     this.markedForDeletion = false;

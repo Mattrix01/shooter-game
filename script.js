@@ -62,13 +62,14 @@ class Raven {
       Math.floor(Math.random() * 255),
     ];
     // concatonate the rgb color declaration
-    (this.color = "rgb(" + this),
+    this.color =
+      "rgb(" +
       this.randomColors[0] +
-        "," +
-        this.randomColors[1] +
-        "," +
-        this.randomColors[2] +
-        ")";
+      "," +
+      this.randomColors[1] +
+      "," +
+      this.randomColors[2] +
+      ")";
   }
   // values that ened to be adjusted for moving raven around
   // passed in deltatime as argument here
@@ -97,7 +98,7 @@ class Raven {
   }
   // draw method takes updated values and any drawing code will represent single raven object visually
   draw() {
-    // each raven now has random color assigned below in their surrounding rect.
+    // each raven now has random color assigned below in their hitbox rectangle!
     ctx.fillStyle = this.color;
     ctx.fillRect(this.x, this.y, this.width, this.height);
     // callingbuilt in draw image method for ravens, expects between 3 or 9 arguments.

@@ -8,6 +8,7 @@ const collisionCtx = collisionCanvas.getContext("2d");
 collisionCanvas.width = window.innerWidth;
 collisionCanvas.height = window.innerHeight;
 let score = 0;
+let gameOver = false;
 // increasing global canvas font below
 ctx.font = "50px Impact";
 
@@ -95,6 +96,8 @@ class Raven {
       // reset back to 0 so can start counting again when to serve next frame
       this.timeSinceFlap = 0;
     }
+    // if statement for if any raven gets passed the screen and I don't remove before, game will end!
+    if (this.x < 0 - this.width) gameOver = true;
   }
   // draw method takes updated values and any drawing code will represent single raven object visually
   draw() {
@@ -136,7 +139,7 @@ class Explosion {
     this.sound = new Audio();
     this.sound.src = "assets/boomfire.wav";
     this.timeSinceLastFrame = 0;
-    this.frameInterval = 200;
+    this.frameInterval = 150;
     this.markedForDeletion = false;
   }
   // increasing frame rate using delta time
@@ -147,11 +150,14 @@ class Explosion {
     // if time since last frame is more than frame interval, increase this.frame by 1
     if (this.timeSinceLastFrame > this.frameInterval) {
       this.frame++;
+      // repeat this below line to make sure frame reset
+      this.timeSinceLastFrame = 0;
       // if all frames in boom sprite sheet displayed and explosion complete, set markForDeletion as TRUE.
       if (this.frame > 5) this.markedForDeletion = true;
     }
   }
   // same method with the ravens
+  // this.y - this.size/4 is so better alignment
   draw() {
     ctx.drawImage(
       this.image,
@@ -160,7 +166,7 @@ class Explosion {
       this.spriteWidth,
       this.spriteHeight,
       this.x,
-      this.y,
+      this.y - this.size / 4,
       this.size,
       this.size
     );
@@ -262,7 +268,28 @@ function animate(timestamp) {
   ravens = ravens.filter((object) => !object.markedForDeletion);
   explosions = explosions.filter((object) => !object.markedForDeletion);
   // using built in below method that will call animate again for constant loop based on timestamps
-  requestAnimationFrame(animate);
+  // only run animation enct frame of our game if gameOver is not true.
+  if (!gameOver) requestAnimationFrame(animate);
+  else drawGameOver();
 }
+
+// draw gameover
+function drawGameOver() {
+  ctx.textALgin = "center";
+  ctx.fillStyle = "black";
+  ctx.fillText(
+    "GAME OVER, your score is " + score,
+    canvas.width / 2,
+    canvas.height / 2
+  );
+  // offset shadow
+  ctx.fillStyle = "white";
+  ctx.fillText(
+    "GAME OVER, your score is " + score,
+    canvas.width / 2 + 5,
+    canvas.height / 2
+  );
+}
+
 // passing timestamp of 0 as an argument
 animate(0);

@@ -99,8 +99,9 @@ class Raven {
   // draw method takes updated values and any drawing code will represent single raven object visually
   draw() {
     // each raven now has random color assigned below in their hitbox rectangle!
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    // drawing coloured recetangles on the collision canvas instead of main one.
+    collisionCtx.fillStyle = this.color;
+    collisionCtx.fillRect(this.x, this.y, this.width, this.height);
     // callingbuilt in draw image method for ravens, expects between 3 or 9 arguments.
     // this,width and height scaling entire sprite sheet to fit
     // 4 arguments after this.image which portion of image we crop. source width height etc.
@@ -124,8 +125,23 @@ window.addEventListener("click", function (e) {
   // it is a simple data structure full of unassigned 8-bit intergers (whole numbers) between a certain value range
   // getImageData needs 4 arguments. x y width height with area we want to scan. 1 pixel etc.
   // image data object we recieve when click, each 4 elemtns represent 1 pixel, its red green blue and alpha (opacity) value. 1-255.
-  const detectPixelColor = ctx.getImageData(e.x, e.y, 1, 1);
+  // changed to the collision convas context so only scanning that one.
+  const detectPixelColor = collisionCtx.getImageData(e.x, e.y, 1, 1);
   console.log(detectPixelColor);
+  // variable to get hold of array of colors pressed
+  const pc = detectPixelColor.data;
+  // for each object in array below, will check if its random color vlaue 1 is same value as pixel clicked on
+  // also check if second and third match, if random colours array amtches exactly the rgb value we know we have collision
+  ravens.forEach((object) => {
+    if (
+      object.randomColors[0] === pc[0] &&
+      object.randomColors[1] === pc[1] &&
+      object.randomColors[2] === pc[2]
+    ) {
+      object.markedForDeletion = true;
+      score++;
+    }
+  });
 });
 
 function drawScore() {
@@ -146,6 +162,8 @@ const raven = new Raven();
 function animate(timestamp) {
   // clear old paint previous frame etc.
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // clearing old pain on second canvas
+  collisionCtx.clearRect(0, 0, canvas.width, canvas.height);
   // calculate delta time in ms. between timestamp from this loop and saved time stamped value from previous loop
   let deltatime = timestamp - lastTime;
   // after used last time value to calculate delta time, assign alst time var to new timestamp passed into the animate loop to comapre in next loop

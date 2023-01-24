@@ -160,6 +160,12 @@ function animate(timestamp) {
     ravens.push(new Raven());
     // then set back to 0 so it can start counting again back from 0.
     timeToNextRaven = 0;
+    // built in array sort method, will reorganise order of elements in the array
+    // based on provided check in a callback function run thorugh array and compare every element against each other and sort in acsending order
+    ravens.sort(function (a, b) {
+      // sorting by width as finiding smallers ones, array sorted by width
+      return a.width - b.width;
+    });
   }
   drawScore();
   // we cycle through array through every single raven object and call thier update and draw methods.

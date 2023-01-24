@@ -100,7 +100,7 @@ let explosions = [];
 class Explosion {
   constructor(x, y, size) {
     this.image = new Image();
-    this.image.src = "assets/boom.png";
+    this.image.src = "assets/boom2.png";
     this.spriteWidth = 200;
     this.spriteHeight = 179;
     this.size = size;
@@ -236,7 +236,7 @@ function drawGameOver() {
   ctx.fillStyle = "black";
   ctx.fillText(
     "GAME OVER, your score is " + score,
-    canvas.width / 3 + 5,
+    canvas.width / 3,
     canvas.height / 3
   );
   // offset shadow

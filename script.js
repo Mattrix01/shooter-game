@@ -50,6 +50,8 @@ class Raven {
       "," +
       this.randomColors[2] +
       ")";
+    // this below random result in a booleon value true or false 50/50
+    this.hasTrail = Math.random() > 0.5;
   }
   update(deltatime) {
     if (this.y < 0 || this.y > canvas.height - this.height) {
@@ -64,6 +66,15 @@ class Raven {
       if (this.frame > this.maxFrame) this.frame = 0;
       else this.frame++;
       this.timeSinceFlap = 0;
+      // only create trails if this is true, only half of them have trails.
+      if (this.hasTrail) {
+        //for loop to make trail nicer adding 5 particles everytime.
+        for (let i = 0; i < 5; i++) {
+          // we are going to push new particles inside
+          // this.color is for the collision detection
+          particles.push(new particle(this.x, this.y, this.width, this.color));
+        }
+      }
     }
     if (this.x < 0 - this.width) gameOver = true;
   }
@@ -126,11 +137,15 @@ class Explosion {
   }
 }
 
+// creating trails behind flying sprites.
 let particles = [];
 class particle {
   constructor(x, y, size, color) {
-    this.x = y;
-    this.y = y;
+    // offsetting x and y + size to get the trails centered correctly
+    this.size = size;
+    // randomising initial x and y co-ordinates to make more interesting
+    this.x = x + this.size / 2 + Math.random() * 50 - 25;
+    this.y = y + this.size / 3 + Math.random() * 50 - 25;
     this.radius = (Math.random() * this.size) / 10;
     this.maxRadius = Math.random() * 20 + 35;
     this.markedForDeletion = false;
@@ -139,14 +154,21 @@ class particle {
   }
   update() {
     this.x += this.speedX;
-    this.radius += 0.2;
-    if (this.radius > this.maxRadius) this.markedForDeletion = true;
+    this.radius += 0.3;
+    // added code to stop blinking end of frame gully opaque, triggering mark for deletion sooners fixes it.(-5)
+    if (this.radius > this.maxRadius - 5) this.markedForDeletion = true;
   }
   draw() {
+    // will create snapshot of current global settings using save
+    ctx.save();
+    // change opacity alpha value for trails, depending on radius
+    ctx.globalAlpha = 1 - this.radius / this.maxRadius;
     ctx.beginPath();
     ctx.fillStyle = this.color;
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
+    // revert back to the save point with restore
+    ctx.restore();
   }
 }
 
@@ -194,10 +216,16 @@ function animate(timestamp) {
   }
 
   drawScore();
-  [...ravens, ...explosions].forEach((object) => object.update(deltatime));
-  [...ravens, ...explosions].forEach((object) => object.draw());
+  // expand spread method to add particles array so thier update method gets called.
+  // how we order the objects is what order they are layered! drawing particles first.
+  [...particles, ...ravens, ...explosions].forEach((object) =>
+    object.update(deltatime)
+  );
+  [...particles, ...ravens, ...explosions].forEach((object) => object.draw());
   ravens = ravens.filter((object) => !object.markedForDeletion);
   explosions = explosions.filter((object) => !object.markedForDeletion);
+  // making sure old particles wieth markedForDeletion property set to true get filtered out from the array.
+  particles = particles.filter((object) => !object.markedForDeletion);
   if (!gameOver) requestAnimationFrame(animate);
   else drawGameOver();
 }

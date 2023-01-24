@@ -236,15 +236,15 @@ function drawGameOver() {
   ctx.fillStyle = "black";
   ctx.fillText(
     "GAME OVER, your score is " + score,
-    canvas.width / 2,
-    canvas.height / 2
+    canvas.width / 3 + 5,
+    canvas.height / 3
   );
   // offset shadow
   ctx.fillStyle = "white";
   ctx.fillText(
     "GAME OVER, your score is " + score,
-    canvas.width / 2 + 5,
-    canvas.height / 2
+    canvas.width / 3 + 5,
+    canvas.height / 3
   );
 }
 

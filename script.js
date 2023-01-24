@@ -119,6 +119,63 @@ class Raven {
     );
   }
 }
+
+// holding animated explosion objects
+let explosions = [];
+// new blue print class for explosion
+class Explosion {
+  constructor(x, y, size) {
+    this.image = new Image();
+    this.image.src = "assets/boom.png";
+    this.spriteWidth = 200;
+    this.spriteHeight = 179;
+    this.size = size;
+    this.x = x;
+    this.y = y;
+    this.frame = 0;
+    this.sound = new Audio();
+    this.sound.src = "assets/boomfire.wav";
+    this.timeSinceLastFrame = 0;
+    this.frameInterval = 200;
+    this.markedForDeletion = false;
+  }
+  // increasing frame rate using delta time
+  update(deltatime) {
+    // for checking if active frame is first one for the explosion sound on frame 1.
+    if (this.frame === 0) this.sound.play();
+    this.timeSinceLastFrame += deltatime;
+    // if time since last frame is more than frame interval, increase this.frame by 1
+    if (this.timeSinceLastFrame > this.frameInterval) {
+      this.frame++;
+      // if all frames in boom sprite sheet displayed and explosion complete, set markForDeletion as TRUE.
+      if (this.frame > 5) this.markedForDeletion = true;
+    }
+  }
+  // same method with the ravens
+  draw() {
+    ctx.drawImage(
+      this.image,
+      this.frame * this.spriteWidth,
+      0,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.x,
+      this.y,
+      this.size,
+      this.size
+    );
+  }
+}
+
+function drawScore() {
+  ctx.fillStyle = "black";
+  // drawing score at co-ordinates 50,70 etc.
+  ctx.fillText("Score: " + score, 50, 75);
+  // adding another score to give shadow effect
+  ctx.fillStyle = "white";
+  ctx.fillText("Score: " + score, 55, 80);
+}
+
 // click event co-ordinates, using colors
 window.addEventListener("click", function (e) {
   // get image data method scans area of canvas and returns an array-like object called UNIT8 clamped array.
@@ -138,21 +195,16 @@ window.addEventListener("click", function (e) {
       object.randomColors[1] === pc[1] &&
       object.randomColors[2] === pc[2]
     ) {
+      // collision detected
       object.markedForDeletion = true;
       score++;
+      // pushing new explosion, triggering class
+      // takes arguments into class for x y co-oridinates and size of raven
+      explosions.push(new Explosion(object.x, object.y, object.width));
+      console.log(explosions);
     }
   });
 });
-
-function drawScore() {
-  ctx.fillStyle = "black";
-  // drawing score at co-ordinates 50,70 etc.
-  ctx.fillText("Score: " + score, 50, 75);
-  // adding another score to give shadow effect
-  ctx.fillStyle = "white";
-  ctx.fillText("Score: " + score, 55, 80);
-}
-
 // this will create 1 raven object that will have access to update and draw class method
 const raven = new Raven();
 // animtion loop
@@ -185,15 +237,6 @@ function animate(timestamp) {
       return a.width - b.width;
     });
   }
-  // holding animated explosion objects
-  let explosion = [];
-  // new blue print class for explosion
-  class Explosions {
-    constructor(x, y, size) {
-      this.image = new Image();
-      this.image.src = "boom";
-    }
-  }
 
   drawScore();
   // we cycle through array through every single raven object and call thier update and draw methods.
@@ -205,8 +248,9 @@ function animate(timestamp) {
   // we can call all classes by just expanding more and more arrays in here. for enemies, obstacles, powerups etc.
   // can call all at once with below syntax.
   // passing argument fo deltatime to update method so its available above.
-  [...ravens].forEach((object) => object.update(deltatime));
-  [...ravens].forEach((object) => object.draw());
+  // ADDING spread operator for explosion
+  [...ravens, ...explosions].forEach((object) => object.update(deltatime));
+  [...ravens, ...explosions].forEach((object) => object.draw());
   // use splice while cycling through array to move objects so not using ones going past screen
   // use built in array filter method.
   // take var that holds ravens array and reassign to new array. make sure let variable so can be changed.
@@ -216,6 +260,7 @@ function animate(timestamp) {
   // take ravens variable and replace with same array but I wasntwed that array to be filled only with objects for which this condition below is TRUE.
   // only objects that ahve marked with deletion property dont go in array.
   ravens = ravens.filter((object) => !object.markedForDeletion);
+  explosions = explosions.filter((object) => !object.markedForDeletion);
   // using built in below method that will call animate again for constant loop based on timestamps
   requestAnimationFrame(animate);
 }

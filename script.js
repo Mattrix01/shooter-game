@@ -2,6 +2,11 @@ const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+// collision canvas
+const collisionCanvas = document.getElementById("collisionCanvas");
+const collisionCtx = collisionCanvas.getContext("2d");
+collisionCanvas.width = window.innerWidth;
+collisionCanvas.height = window.innerHeight;
 let score = 0;
 // increasing global canvas font below
 ctx.font = "50px Impact";
@@ -50,6 +55,20 @@ class Raven {
     // change this value affects speed, how many milliseconds between each frame
     // could be set to 100ms but here using random numbers between two values.
     this.flapInterval = Math.random() * 50 + 50;
+    // everytime raven created, roll dice and randomly give red, green or blue colour value. 225 colour range
+    this.randomColors = [
+      Math.floor(Math.random() * 255),
+      Math.floor(Math.random() * 255),
+      Math.floor(Math.random() * 255),
+    ];
+    // concatonate the rgb color declaration
+    (this.color = "rgb(" + this),
+      this.randomColors[0] +
+        "," +
+        this.randomColors[1] +
+        "," +
+        this.randomColors[2] +
+        ")";
   }
   // values that ened to be adjusted for moving raven around
   // passed in deltatime as argument here
@@ -78,7 +97,9 @@ class Raven {
   }
   // draw method takes updated values and any drawing code will represent single raven object visually
   draw() {
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
+    // each raven now has random color assigned below in their surrounding rect.
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
     // callingbuilt in draw image method for ravens, expects between 3 or 9 arguments.
     // this,width and height scaling entire sprite sheet to fit
     // 4 arguments after this.image which portion of image we crop. source width height etc.
@@ -101,6 +122,7 @@ window.addEventListener("click", function (e) {
   // get image data method scans area of canvas and returns an array-like object called UNIT8 clamped array.
   // it is a simple data structure full of unassigned 8-bit intergers (whole numbers) between a certain value range
   // getImageData needs 4 arguments. x y width height with area we want to scan. 1 pixel etc.
+  // image data object we recieve when click, each 4 elemtns represent 1 pixel, its red green blue and alpha (opacity) value. 1-255.
   const detectPixelColor = ctx.getImageData(e.x, e.y, 1, 1);
   console.log(detectPixelColor);
 });

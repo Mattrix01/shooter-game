@@ -10,6 +10,9 @@ collisionCanvas.height = window.innerHeight;
 let score = 0;
 let gameOver = false;
 
+var sample = document.getElementById("foobar");
+sample.play();
+
 ctx.font = "50px Impact";
 
 let timeToNextAlien = 0;

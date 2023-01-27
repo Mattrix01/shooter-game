@@ -12,4 +12,4 @@ Shoot Aliens with the mouse, that's pretty much it.
 
 ## Links
 
-Deployed page - [Github Pages](https://mattrix01.github.io/shooter-game)
+Deployed page - [Gameplay Screenshot](https://mattrix01.github.io/shooter-game)

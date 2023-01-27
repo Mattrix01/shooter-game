@@ -1,7 +1,15 @@
-# shooter-game
+# Shoot the Silly Aliens!
+
+## Description
 
 My first shooter game
 
-Shoot Aliens with the mouse
+Shoot Aliens with the mouse, that's pretty much it.
 
-deployment link:
+## Links
+
+![Screenshot of gameplay](assets/aliengame-screenshot.png)
+
+## Links
+
+Deployed page - [Github Pages](https://mattrix01.github.io/shooter-game)

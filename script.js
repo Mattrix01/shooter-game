@@ -236,17 +236,17 @@ function animate(timestamp) {
 }
 
 function drawGameOver() {
-  ctx.textALgin = "center";
+  ctx.textAlgin = "center";
   ctx.fillStyle = "black";
   ctx.fillText(
-    "GAME OVER, your score is " + score,
+    "You killed " + score + " of the freaks!",
     canvas.width / 3,
     canvas.height / 3
   );
   // offset shadow
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "red";
   ctx.fillText(
-    "GAME OVER, your score is " + score,
+    "You killed " + score + " of the freaks!",
     canvas.width / 3 + 5,
     canvas.height / 3
   );

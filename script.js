@@ -111,7 +111,8 @@ class Explosion {
     this.y = y;
     this.frame = 0;
     this.sound = new Audio();
-    this.sound.src = "assets/laser2.wav";
+    // laser fx
+    this.sound.src = "assets/laser3.wav";
     this.timeSinceLastFrame = 0;
     this.frameInterval = 150;
     this.markedForDeletion = false;

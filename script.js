@@ -12,14 +12,14 @@ let gameOver = false;
 
 ctx.font = "50px Impact";
 
-let timeToNextRaven = 0;
+let timeToNextAlien = 0;
 
-let RavenInterval = 500;
+let AlienInterval = 500;
 
 let lastTime = 0;
-let ravens = [];
+let aliens = [];
 
-class Raven {
+class Alien {
   constructor() {
     //w 4100/20 h 176 = 205
     this.spriteWidth = 205;
@@ -35,7 +35,7 @@ class Raven {
     this.image = new Image();
     this.image.src = "assets/alien-sheet.png";
     this.frame = 0;
-    this.maxFrame = 4;
+    this.maxFrame = 18;
     this.timeSinceFlap = 0;
     this.flapInterval = Math.random() * 50 + 50;
     this.randomColors = [
@@ -183,7 +183,7 @@ function drawScore() {
 window.addEventListener("click", function (e) {
   const detectPixelColor = collisionCtx.getImageData(e.x, e.y, 1, 1);
   const pc = detectPixelColor.data;
-  ravens.forEach((object) => {
+  aliens.forEach((object) => {
     if (
       object.randomColors[0] === pc[0] &&
       object.randomColors[1] === pc[1] &&
@@ -198,20 +198,20 @@ window.addEventListener("click", function (e) {
   });
 });
 
-const raven = new Raven();
+const alien = new Alien();
 
 function animate(timestamp) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   collisionCtx.clearRect(0, 0, canvas.width, canvas.height);
   let deltatime = timestamp - lastTime;
   lastTime = timestamp;
-  timeToNextRaven += deltatime;
-  if (timeToNextRaven > RavenInterval) {
-    ravens.push(new Raven());
+  timeToNextAlien += deltatime;
+  if (timeToNextAlien > AlienInterval) {
+    aliens.push(new Alien());
 
-    timeToNextRaven = 0;
+    timeToNextAlien = 0;
 
-    ravens.sort(function (a, b) {
+    aliens.sort(function (a, b) {
       return a.width - b.width;
     });
   }
@@ -219,11 +219,11 @@ function animate(timestamp) {
   drawScore();
   // expand spread method to add particles array so thier update method gets called.
   // how we order the objects is what order they are layered! drawing particles first.
-  [...particles, ...ravens, ...explosions].forEach((object) =>
+  [...particles, ...aliens, ...explosions].forEach((object) =>
     object.update(deltatime)
   );
-  [...particles, ...ravens, ...explosions].forEach((object) => object.draw());
-  ravens = ravens.filter((object) => !object.markedForDeletion);
+  [...particles, ...aliens, ...explosions].forEach((object) => object.draw());
+  aliens = aliens.filter((object) => !object.markedForDeletion);
   explosions = explosions.filter((object) => !object.markedForDeletion);
   // making sure old particles wieth markedForDeletion property set to true get filtered out from the array.
   particles = particles.filter((object) => !object.markedForDeletion);
